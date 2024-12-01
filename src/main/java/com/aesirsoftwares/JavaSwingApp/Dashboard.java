@@ -1,6 +1,8 @@
 package com.aesirsoftwares.javaswingapp;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import com.aesirsoftwares.Parser;
@@ -14,7 +16,6 @@ public class Dashboard extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
-
         btnFechar = new javax.swing.JButton();
         btnConfirmar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -26,7 +27,7 @@ public class Dashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnFechar.setFont(new java.awt.Font("Arial", 1, 12));
-        btnFechar.setText("X");
+        btnFechar.setText("Cancelar");
         btnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 System.exit(0);
@@ -36,6 +37,22 @@ public class Dashboard extends javax.swing.JFrame {
         btnConfirmar.setFont(new java.awt.Font("Arial", 1, 12));
         btnConfirmar.setText("Confirmar");
         btnConfirmar.addActionListener(evt -> btnConfirmarActionPerformed(evt));
+
+        btnFechar.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    System.exit(0);
+                }
+            }
+        });
+
+        btnConfirmar.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnConfirmar.doClick();
+                }
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 12));
         jLabel1.setText("Digite um URL/IP válido:");
@@ -102,18 +119,20 @@ public class Dashboard extends javax.swing.JFrame {
             String parseResult = Parser.parseInput(input); // Validando entrada
             resultado.append("Resultado da análise inicial: ").append(parseResult).append("\n");
 
-            if ("URL válida".equals(parseResult)) {
+            if ("URL válida".equals(parseResult) || "IP válido".equals(parseResult)) {
                 resultado.append("Usando o OWASP ZAP para verificar vulnerabilidades...\n");
-                List<String> vulnerabilities = VulnerabilityScanner.scanWithOWASPZAP(input);
+                List<String> vulnerabilities = VulnerabilityScanner.scanWithOWASPZAP(input);  // Retorna uma lista com as vulnerabilidades
 
                 if (vulnerabilities.isEmpty()) {
                     resultado.append("Nenhuma vulnerabilidade encontrada.\n");
                 } else {
                     resultado.append("Vulnerabilidades encontradas:\n");
-                    vulnerabilities.forEach(v -> resultado.append("- ").append(v).append("\n"));
+                    for (String vulnerability : vulnerabilities) {
+                        resultado.append(vulnerability).append("\n");
+                    }
                 }
             } else {
-                resultado.append("O programa não suporta análises diretas de IP neste momento.\n");
+                resultado.append("Entrada inválida. O programa suporta apenas URLs ou IPs válidos.\n");
             }
         } catch (Exception e) {
             resultado.append("Erro durante o processamento: ").append(e.getMessage());
