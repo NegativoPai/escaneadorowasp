@@ -1,10 +1,10 @@
-package com.aesirsoftwares.JavaSwingApp;
+package com.aesirsoftwares.javaswingapp;
 
-import main.java.com.example.Parser;
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import JavaSwingApp.VulnerabilityScanner;
+
+import com.aesirsoftwares.Parser;
+import com.aesirsoftwares.VulnerabilityScanner;
 
 public class Dashboard extends javax.swing.JFrame {
 
