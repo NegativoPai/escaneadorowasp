@@ -1,4 +1,4 @@
-package com.aesirsoftwares.JavaSwingApp;
+package com.aesirsoftwares.javaswingapp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;

@@ -1,4 +1,4 @@
-package com.aesirsoftwares.JavaSwingApp;
+package com.aesirsoftwares.javaswingapp;
 
 import javax.swing.JOptionPane;
 
