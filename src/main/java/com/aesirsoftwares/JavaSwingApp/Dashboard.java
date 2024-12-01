@@ -1,4 +1,4 @@
-package JavaSwingApp;
+package com.aesirsoftwares.JavaSwingApp;
 
 import main.java.com.example.Parser;
 import javax.swing.*;

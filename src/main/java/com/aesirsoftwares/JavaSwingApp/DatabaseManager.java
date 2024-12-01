@@ -1,4 +1,4 @@
-package main.java.com.example;
+package com.aesirsoftwares.JavaSwingApp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
