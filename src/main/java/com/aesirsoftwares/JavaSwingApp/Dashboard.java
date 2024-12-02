@@ -28,6 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnFechar.setFont(new java.awt.Font("Arial", 1, 12));
         btnFechar.setText("Cancelar");
+        btnFechar.setPreferredSize(new java.awt.Dimension(100, 30)); // Ajuste do tamanho preferido
         btnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 System.exit(0);
@@ -74,7 +75,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane1)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE) // Alteração aqui
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnConfirmar))
                         .addGroup(layout.createSequentialGroup()
