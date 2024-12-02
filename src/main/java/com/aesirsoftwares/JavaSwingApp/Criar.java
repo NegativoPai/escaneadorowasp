@@ -27,7 +27,7 @@ public class Criar extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Criar Conta");
     
-        // Configurar os botões
+       
         jButton1.setText("Criar");
         btnCancelar.setText("Cancelar");
         btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -36,14 +36,14 @@ public class Criar extends javax.swing.JFrame {
             }
         });
     
-        // Labels
+  
         jLabel1.setText("Usuario:");
         jLabel2.setText("Senha:");
         jLabel3.setText("Confirmar Senha:");
-        jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 18));
         jLabel4.setText("Criar Conta");
     
-        // Layout configurado
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,12 +100,12 @@ public class Criar extends javax.swing.JFrame {
     
 
     private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {
-        // Fechar a janela de criação
+        
         System.exit(0);
     }
 
     private void textSenhaActionPerformed(java.awt.event.ActionEvent evt) {
-        // Se necessário, pode adicionar mais funcionalidades aqui
+       
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,39 +113,34 @@ public class Criar extends javax.swing.JFrame {
         String senha = new String(textSenha.getPassword());
         String confirmarSenha = new String(textConfirmarSenha.getPassword());
 
-        // Validando se os campos estão vazios
+        
         if (usuario.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos os campos devem ser preenchidos", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validando se as senhas são iguais
+        
         if (!senha.equals(confirmarSenha)) {
             JOptionPane.showMessageDialog(this, "As senhas não coincidem", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Conectar ao banco de dados e salvar
         salvarUsuario(usuario, senha);
     }
 
     private void salvarUsuario(String usuario, String senha) {
-        // Configuração da URL do banco de dados SQLite
-        String dbUrl = "jdbc:sqlite:usuarios.db"; // Aqui você pode alterar o nome do banco se necessário
+        String dbUrl = "jdbc:sqlite:usuarios.db"; 
         
-        // SQL para inserir o usuário no banco
         String insertSQL = "INSERT INTO usuarios (usuario, senha) VALUES (?, ?)";
 
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
-            // Preparando o statement
             PreparedStatement pstmt = conn.prepareStatement(insertSQL);
             pstmt.setString(1, usuario);
             pstmt.setString(2, senha);
             
-            // Executando a inserção no banco de dados
             pstmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Conta criada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();  // Fechar a janela de criar conta
+            this.dispose();  
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar no banco de dados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -156,8 +151,8 @@ public class Criar extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Criar janela = new Criar();
-                janela.setSize(400, 300);  // Tamanho da janela
-                janela.setLocationRelativeTo(null);  // Centraliza a janela
+                janela.setSize(400, 300);  
+                janela.setLocationRelativeTo(null);  
                 janela.setVisible(true);
             }
         });

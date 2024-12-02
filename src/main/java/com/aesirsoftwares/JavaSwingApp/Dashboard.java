@@ -28,7 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnFechar.setFont(new java.awt.Font("Arial", 1, 12));
         btnFechar.setText("Cancelar");
-        btnFechar.setPreferredSize(new java.awt.Dimension(100, 30)); // Ajuste do tamanho preferido
+        btnFechar.setPreferredSize(new java.awt.Dimension(100, 30));
         btnFechar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 System.exit(0);
@@ -117,12 +117,12 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
         try {
-            String parseResult = Parser.parseInput(input); // Validando entrada
+            String parseResult = Parser.parseInput(input); 
             resultado.append("Resultado da análise inicial: ").append(parseResult).append("\n");
 
             if ("URL válida".equals(parseResult) || "IP válido".equals(parseResult)) {
                 resultado.append("Usando o OWASP ZAP para verificar vulnerabilidades...\n");
-                List<String> vulnerabilities = VulnerabilityScanner.scanWithOWASPZAP(input);  // Retorna uma lista com as vulnerabilidades
+                List<String> vulnerabilities = VulnerabilityScanner.scanWithOWASPZAP(input); 
 
                 if (vulnerabilities.isEmpty()) {
                     resultado.append("Nenhuma vulnerabilidade encontrada.\n");

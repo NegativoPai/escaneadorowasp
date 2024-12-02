@@ -1,9 +1,6 @@
 package com.aesirsoftwares.javaswingapp;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseManager {
 
@@ -11,30 +8,32 @@ public class DatabaseManager {
 
     static {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            // Criando tabela caso não exista
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS entries (" +
+            String createEntriesTable = "CREATE TABLE IF NOT EXISTS entries (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "input TEXT NOT NULL," +
                     "type TEXT NOT NULL," +
                     "result TEXT NOT NULL" +
                     ");";
-            conn.createStatement().execute(createTableSQL);
+            String createUsersTable = "CREATE TABLE IF NOT EXISTS users (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "username TEXT NOT NULL UNIQUE," +
+                    "token TEXT NOT NULL" +
+                    ");";
+            conn.createStatement().execute(createEntriesTable);
+            conn.createStatement().execute(createUsersTable);
         } catch (SQLException e) {
             System.err.println("Erro ao inicializar o banco de dados: " + e.getMessage());
         }
     }
 
-    // Método para salvar entrada no banco de dados
     public static void saveEntry(String input, String type, String result) {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             String insertSQL = "INSERT INTO entries (input, type, result) VALUES (?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(insertSQL);
-
             pstmt.setString(1, input);
             pstmt.setString(2, type);
             pstmt.setString(3, result);
 
-            // Executando a inserção no banco de dados
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Entrada salva com sucesso!");
@@ -44,5 +43,38 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.err.println("Erro ao salvar no banco de dados: " + e.getMessage());
         }
+    }
+
+    public static void saveUser(String username, String token) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String upsertSQL = "INSERT INTO users (username, token) VALUES (?, ?) " +
+                    "ON CONFLICT(username) DO UPDATE SET token = excluded.token";
+            PreparedStatement pstmt = conn.prepareStatement(upsertSQL);
+            pstmt.setString(1, username);
+            pstmt.setString(2, token);
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Usuário salvo/atualizado com sucesso!");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao salvar/atualizar usuário: " + e.getMessage());
+        }
+    }
+
+    public static String getUserToken(String username) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String querySQL = "SELECT token FROM users WHERE username = ?";
+            PreparedStatement pstmt = conn.prepareStatement(querySQL);
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("token");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar token de usuário: " + e.getMessage());
+        }
+        return null;
     }
 }
