@@ -1,4 +1,4 @@
-package com.aesirsoftwares.javaswingapp;
+package com.aesirsoftwares.JavaSwingApp;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,7 @@ public class Login {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Login");
-        frame.setSize(300, 200);
+        frame.setSize(300, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -29,8 +29,12 @@ public class Login {
         frame.add(passwordText);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setBounds(10, 80, 150, 25);
+        loginButton.setBounds(10, 80, 100, 25);
         frame.add(loginButton);
+
+        JButton createAccountButton = new JButton("Criar Conta");
+        createAccountButton.setBounds(120, 80, 145, 25);
+        frame.add(createAccountButton);
 
         JLabel statusLabel = new JLabel("");
         statusLabel.setBounds(10, 110, 250, 25);
@@ -42,17 +46,36 @@ public class Login {
                 String username = userText.getText();
                 String password = new String(passwordText.getPassword());
 
-                if ("admin".equals(username) && "1234".equals(password)) {
+                if (DatabaseManager.authenticateUser(username, password)) {
                     statusLabel.setText("Login bem-sucedido!");
-
-                    DatabaseManager.saveEntry(username, "login", "sucesso");
+                    redirectToDashboard(username);
                 } else {
-                    statusLabel.setText("Login falhou!");
-                    DatabaseManager.saveEntry(username, "login", "falha");
+                    statusLabel.setText("Nome de usuário ou senha incorretos.");
                 }
             }
         });
 
+        createAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                Criar.main(null);
+            }
+        });
+
         frame.setVisible(true);
+    }
+
+    private static void redirectToDashboard(String username) {
+        JFrame dashboard = new JFrame("Dashboard");
+        dashboard.setSize(400, 300);
+        dashboard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        dashboard.setLayout(null);
+
+        JLabel welcomeLabel = new JLabel("Bem-vindo, " + username + "!");
+        welcomeLabel.setBounds(10, 10, 300, 25);
+        dashboard.add(welcomeLabel);
+
+        dashboard.setVisible(true);
     }
 }

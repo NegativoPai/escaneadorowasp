@@ -1,39 +1,60 @@
 package com.aesirsoftwares;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
-public class DatabaseManager{
+public class DatabaseManager {
+
     private static final String DB_URL = "jdbc:sqlite:analyzer.db";
 
-    static{
-        try (Connection conn = DriverManager.getConnection(DB_URL)){
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS entries (" + "id INTEGER PRIMARY KEY AUTOINCREMENT," + "input TEXT NOT NULL," + "type TEXT NOT NULL," + "result TEXT NOT NULL" + ");";
-conn.createStatement().execute(createTableSQL);
-        } catch (Exception e)
-{
-        
-System.err.println("Erro ao inicializar o banco de dados: " + e.getMessage());
+    static {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            // Criando tabelas caso não existam
+            String createUsersTable = "CREATE TABLE IF NOT EXISTS users (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "username TEXT NOT NULL UNIQUE," + // Restringe duplicidade
+                    "password TEXT NOT NULL" + // Senha armazenada com hash preferencialmente
+                    ");";
+            conn.createStatement().execute(createUsersTable);
+        } catch (SQLException e) {
+            System.err.println("Erro ao inicializar o banco de dados: " + e.getMessage());
+        }
     }
-}
 
-public static void saveEntry(String input, String type, String result){
-    try (Connection conn = DriverManager.getConnection(DB_URL)) {
-        String insertSQL = "INSERT INTO entries (input, type, result) VALUES (?, ?, ?)";
-        PreparedStatement pstmt = conn.prepareStatement(insertSQL);
+    // Salvar novo usuário no banco de dados
+    public static boolean createUser(String username, String password) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String insertSQL = "INSERT INTO users (username, password) VALUES (?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(insertSQL);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password); // Aqui você pode implementar hash na senha
 
-        pstmt.setString(1, input);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            if (e.getMessage().contains("UNIQUE")) {
+                System.err.println("Erro: Nome de usuário já existe.");
+            } else {
+                System.err.println("Erro ao criar usuário: " + e.getMessage());
+            }
+            return false;
+        }
+    }
 
-        pstmt.setString(2, type);
+    // Autenticar usuário
+    public static boolean authenticateUser(String username, String password) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String querySQL = "SELECT password FROM users WHERE username = ?";
+            PreparedStatement pstmt = conn.prepareStatement(querySQL);
+            pstmt.setString(1, username);
 
-        pstmt.setString(3, result);
-
-        pstmt.executeUpdate();
-    } catch (Exception e)
-{
-
-System.err.println("Erro ao salvar no banco de dados: " + e.getMessage());
-}
-}
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String storedPassword = rs.getString("password");
+                return storedPassword.equals(password); // Aqui você pode comparar hash
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao autenticar usuário: " + e.getMessage());
+        }
+        return false;
+    }
 }
